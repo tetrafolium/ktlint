@@ -13,21 +13,6 @@ import com.github.shyiko.ktlint.internal.EditorConfig
 import com.github.shyiko.ktlint.internal.IntellijIDEAIntegration
 import com.github.shyiko.ktlint.internal.MavenDependencyResolver
 import com.github.shyiko.ktlint.test.DumpAST
-import org.eclipse.aether.RepositoryException
-import org.eclipse.aether.artifact.DefaultArtifact
-import org.eclipse.aether.repository.RemoteRepository
-import org.eclipse.aether.repository.RepositoryPolicy
-import org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_IGNORE
-import org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER
-import org.jetbrains.kotlin.preprocessor.mkdirsOrFail
-import org.kohsuke.args4j.Argument
-import org.kohsuke.args4j.CmdLineException
-import org.kohsuke.args4j.CmdLineParser
-import org.kohsuke.args4j.NamedOptionDef
-import org.kohsuke.args4j.Option
-import org.kohsuke.args4j.OptionHandlerFilter
-import org.kohsuke.args4j.ParserProperties
-import org.kohsuke.args4j.spi.OptionHandler
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
@@ -54,6 +39,21 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.jar.Manifest
 import kotlin.system.exitProcess
+import org.eclipse.aether.RepositoryException
+import org.eclipse.aether.artifact.DefaultArtifact
+import org.eclipse.aether.repository.RemoteRepository
+import org.eclipse.aether.repository.RepositoryPolicy
+import org.eclipse.aether.repository.RepositoryPolicy.CHECKSUM_POLICY_IGNORE
+import org.eclipse.aether.repository.RepositoryPolicy.UPDATE_POLICY_NEVER
+import org.jetbrains.kotlin.preprocessor.mkdirsOrFail
+import org.kohsuke.args4j.Argument
+import org.kohsuke.args4j.CmdLineException
+import org.kohsuke.args4j.CmdLineParser
+import org.kohsuke.args4j.NamedOptionDef
+import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.OptionHandlerFilter
+import org.kohsuke.args4j.ParserProperties
+import org.kohsuke.args4j.spi.OptionHandler
 
 object Main {
 

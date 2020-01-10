@@ -3,11 +3,11 @@ package com.github.shyiko.ktlint.test
 import com.andreapivetta.kolor.Color
 import com.andreapivetta.kolor.Kolor
 import com.github.shyiko.ktlint.core.Rule
+import java.io.PrintStream
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.diagnostics.DiagnosticUtils
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
-import java.io.PrintStream
 
 val debugAST = {
     (System.getProperty("ktlintDebug") ?: System.getenv("KTLINT_DEBUG") ?: "")

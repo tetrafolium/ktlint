@@ -1,12 +1,12 @@
 package com.github.shyiko.ktlint.core
 
+import java.util.ArrayList
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.testng.annotations.Test
-import java.util.ArrayList
 
 class ErrorSuppressionTest {
 
