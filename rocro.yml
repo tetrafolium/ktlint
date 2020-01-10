@@ -2,7 +2,7 @@ inspecode:
 
     detekt:
         thresholds:
-            num-issues: 999
+            num-issues: 111
 
     grep:
         thresholds:
@@ -10,12 +10,12 @@ inspecode:
 
     jscpd:
         thresholds:
-            num-issues: 999
+            num-issues: 45
 
     ktlint:
         auto-fix: true
         thresholds:
-            num-issues: 0
+            num-issues: 12
 
     misspell:
         auto-fix: true
