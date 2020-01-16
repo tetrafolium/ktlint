@@ -3,6 +3,21 @@ inspecode:
     detekt:
         thresholds:
             num-issues: 111
+            #   15 ComplexCondition
+            #   17 ComplexMethod
+            #    8 EmptyFunctionBlock
+            #   17 ForbiddenComment
+            #    7 LongMethod
+            #    9 MagicNumber
+            #    1 MatchingDeclarationName
+            #   29 MaxLineLength
+            #    9 NestedBlockDepth
+            #    2 ReturnCount
+            #    6 SpreadOperator
+            #    2 ThrowsCount
+            #    7 TooGenericExceptionCaught
+            #    5 TooGenericExceptionThrown
+            #    2 TooManyFunctions
 
     grep:
         thresholds:
