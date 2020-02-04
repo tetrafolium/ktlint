@@ -31,7 +31,7 @@ inspecode:
         ignore:
           - '**/src/test/'
         thresholds:
-            num-issues: 23
+            num-issues: 24
 
     ktlint:
         config-file: .editorconfig  # (auto-detect)
