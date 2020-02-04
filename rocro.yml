@@ -1,24 +1,26 @@
 inspecode:
 
     detekt:
+        ignore:
+          - '**/src/test/'
         options:
             --language-version: 1.4
         thresholds:
-            num-issues: 111
+            num-issues: 102
             #   15 ComplexCondition
             #   17 ComplexMethod
             #    8 EmptyFunctionBlock
-            #   17 ForbiddenComment
-            #    7 LongMethod
+            #   14 ForbiddenComment
+            #    6 LongMethod
             #    9 MagicNumber
             #    1 MatchingDeclarationName
-            #   29 MaxLineLength
+            #   26 MaxLineLength
             #    9 NestedBlockDepth
             #    2 ReturnCount
             #    6 SpreadOperator
             #    2 ThrowsCount
             #    7 TooGenericExceptionCaught
-            #    5 TooGenericExceptionThrown
+            #    2 TooGenericExceptionThrown
             #    2 TooManyFunctions
 
     grep:
@@ -26,8 +28,10 @@ inspecode:
             num-issues: 0
 
     jscpd:
+        ignore:
+          - '**/src/test/'
         thresholds:
-            num-issues: 45
+            num-issues: 23
 
     ktlint:
         config-file: .editorconfig  # (auto-detect)
