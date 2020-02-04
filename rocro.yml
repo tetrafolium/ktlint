@@ -1,6 +1,8 @@
 inspecode:
 
     detekt:
+        options:
+            --language-version: 1.4
         thresholds:
             num-issues: 111
             #   15 ComplexCondition
@@ -28,6 +30,7 @@ inspecode:
             num-issues: 45
 
     ktlint:
+        config-file: .editorconfig  # (auto-detect)
         auto-fix: true
         thresholds:
             num-issues: 1
