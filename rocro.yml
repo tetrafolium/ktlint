@@ -5,7 +5,7 @@ inspecode:
           - '**/src/test/'
         options:
             --language-version: 1.4
-        thresholds: { num-issues: 102 }
+        thresholds: { num-issues: 101 }
             #   15 ComplexCondition
             #   17 ComplexMethod
             #    8 EmptyFunctionBlock
@@ -23,7 +23,7 @@ inspecode:
             #    2 TooManyFunctions
 
     fossology:
-        thresholds: { num-issues: 999 }
+        thresholds: { num-issues: 4 }
 
     grep:
         thresholds: { num-issues: 0 }
