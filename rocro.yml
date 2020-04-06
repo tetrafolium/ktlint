@@ -5,8 +5,7 @@ inspecode:
           - '**/src/test/'
         options:
             --language-version: 1.4
-        thresholds:
-            num-issues: 102
+        thresholds: { num-issues: 102 }
             #   15 ComplexCondition
             #   17 ComplexMethod
             #    8 EmptyFunctionBlock
@@ -23,23 +22,22 @@ inspecode:
             #    2 TooGenericExceptionThrown
             #    2 TooManyFunctions
 
+    fossology:
+        thresholds: { num-issues: 999 }
+
     grep:
-        thresholds:
-            num-issues: 0
+        thresholds: { num-issues: 0 }
 
     jscpd:
         ignore:
           - '**/src/test/'
-        thresholds:
-            num-issues: 24
+        thresholds: { num-issues: 24 }
 
     ktlint:
-        config-file: .editorconfig  # (auto-detect)
+        #config-file: .editorconfig  # (auto-detect)
         auto-fix: true
-        thresholds:
-            num-issues: 1
+        thresholds: { num-issues: 1 }
 
     misspell:
         auto-fix: true
-        thresholds:
-            num-issues: 0
+        thresholds: { num-issues: 0 }
