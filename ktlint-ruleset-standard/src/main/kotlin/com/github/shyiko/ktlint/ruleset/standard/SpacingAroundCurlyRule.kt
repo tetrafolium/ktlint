@@ -24,14 +24,17 @@ class SpacingAroundCurlyRule : Rule("curly-spacing") {
             val spacingBefore: Boolean
             val spacingAfter: Boolean
             if (node.textMatches("{")) {
-                spacingBefore = prevLeaf is PsiWhiteSpace || prevLeaf?.node?.elementType == KtTokens.AT || (prevLeaf?.node?.elementType == KtTokens.LPAR &&
-                    (node.parent is KtLambdaExpression || node.parent.parent is KtLambdaExpression))
+                spacingBefore = prevLeaf is PsiWhiteSpace || prevLeaf?.node?.elementType == KtTokens.AT || (
+                    prevLeaf?.node?.elementType == KtTokens.LPAR &&
+                        (node.parent is KtLambdaExpression || node.parent.parent is KtLambdaExpression)
+                    )
                 spacingAfter = nextLeaf is PsiWhiteSpace || nextLeaf?.node?.elementType == KtTokens.RBRACE
                 if (prevLeaf is PsiWhiteSpace &&
                     !prevLeaf.textContains('\n') &&
                     PsiTreeUtil.prevLeaf(prevLeaf, true)?.node?.let {
                         it.elementType == KtTokens.LPAR || it.elementType == KtTokens.AT
-                    } == true) {
+                    } == true
+                ) {
                     emit(node.startOffset, "Unexpected space before \"${node.text}\"", true)
                     if (autoCorrect) {
                         prevLeaf.node.treeParent.removeChild(prevLeaf.node)
@@ -40,10 +43,13 @@ class SpacingAroundCurlyRule : Rule("curly-spacing") {
                 if (prevLeaf is PsiWhiteSpace &&
                     prevLeaf.textContains('\n') &&
                     prevLeaf.text.isBlank() &&
-                    (PsiTreeUtil.prevLeaf(prevLeaf, true)?.node?.let {
-                        it.elementType == KtTokens.RPAR || KtTokens.KEYWORDS.contains(it.elementType)
-                    } == true ||
-                    node.parent.node.elementType == KtNodeTypes.CLASS_BODY)) {
+                    (
+                        PsiTreeUtil.prevLeaf(prevLeaf, true)?.node?.let {
+                            it.elementType == KtTokens.RPAR || KtTokens.KEYWORDS.contains(it.elementType)
+                        } == true ||
+                            node.parent.node.elementType == KtNodeTypes.CLASS_BODY
+                        )
+                ) {
                     emit(node.startOffset, "Unexpected newline before \"${node.text}\"", true)
                     if (autoCorrect) {
                         (prevLeaf.node as LeafPsiElement).rawReplaceWithText(" ")
@@ -53,7 +59,8 @@ class SpacingAroundCurlyRule : Rule("curly-spacing") {
                 spacingBefore = prevLeaf is PsiWhiteSpace || prevLeaf?.node?.elementType == KtTokens.LBRACE
                 spacingAfter = nextLeaf == null || nextLeaf is PsiWhiteSpace || shouldNotToBeSeparatedBySpace(nextLeaf)
                 if (nextLeaf is PsiWhiteSpace && !nextLeaf.textContains('\n') &&
-                        shouldNotToBeSeparatedBySpace(PsiTreeUtil.nextLeaf(nextLeaf, true))) {
+                    shouldNotToBeSeparatedBySpace(PsiTreeUtil.nextLeaf(nextLeaf, true))
+                ) {
                     emit(node.startOffset, "Unexpected space after \"${node.text}\"", true)
                     if (autoCorrect) {
                         nextLeaf.node.treeParent.removeChild(nextLeaf.node)

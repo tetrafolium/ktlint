@@ -1,7 +1,5 @@
 package com.github.shyiko.ktlint.core
 
-import java.util.ArrayList
-import java.util.HashSet
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
@@ -10,7 +8,6 @@ import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.com.intellij.openapi.Disposable
 import org.jetbrains.kotlin.com.intellij.openapi.diagnostic.DefaultLogger
-import org.jetbrains.kotlin.com.intellij.openapi.diagnostic.Logger as DiagnosticLogger
 import org.jetbrains.kotlin.com.intellij.openapi.extensions.ExtensionPoint
 import org.jetbrains.kotlin.com.intellij.openapi.extensions.Extensions.getArea
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
@@ -32,6 +29,9 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.prevLeaf
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
 import sun.reflect.ReflectionFactory
+import java.util.ArrayList
+import java.util.HashSet
+import org.jetbrains.kotlin.com.intellij.openapi.diagnostic.Logger as DiagnosticLogger
 
 object KtLint {
 
@@ -52,8 +52,10 @@ object KtLint {
         DiagnosticLogger.setFactory(LoggerFactory::class.java)
         val compilerConfiguration = CompilerConfiguration()
         compilerConfiguration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
-        val project = KotlinCoreEnvironment.createForProduction(Disposable {},
-            compilerConfiguration, EnvironmentConfigFiles.JVM_CONFIG_FILES).project
+        val project = KotlinCoreEnvironment.createForProduction(
+            Disposable {},
+            compilerConfiguration, EnvironmentConfigFiles.JVM_CONFIG_FILES
+        ).project
         // everything below (up to PsiFileFactory.getInstance(...)) is to get AST mutations (`ktlint -F ...`) working
         // otherwise it's not needed
         val pomModel: PomModel = object : UserDataHolderBase(), PomModel {
@@ -69,7 +71,8 @@ object KtLint {
                     // (check constructor signature and compare it to the source)
                     // (org.jetbrains.kotlin:kotlin-compiler-embeddable:1.0.3)
                     val constructor = ReflectionFactory.getReflectionFactory().newConstructorForSerialization(
-                        aspect, Any::class.java.getDeclaredConstructor(*arrayOfNulls<Class<*>>(0)))
+                        aspect, Any::class.java.getDeclaredConstructor(*arrayOfNulls<Class<*>>(0))
+                    )
                     return constructor.newInstance(*emptyArray()) as T
                 }
                 return null
@@ -252,7 +255,8 @@ object KtLint {
         SuppressionHint.collect(rootNode).let { listOfHints ->
             if (listOfHints.isEmpty()) nullSuppression else { offset, ruleId ->
                 listOfHints.any { (range, disabledRules) ->
-                    (disabledRules.isEmpty() || disabledRules.contains(ruleId)) && range.contains(offset) }
+                    (disabledRules.isEmpty() || disabledRules.contains(ruleId)) && range.contains(offset)
+                }
             }
         }
 
@@ -400,8 +404,10 @@ object KtLint {
                         if (text.startsWith("//")) {
                             val commentText = text.removePrefix("//").trim()
                             parseHintArgs(commentText, "ktlint-disable")?.let { args ->
-                                val lineStart = (node.prevLeaf { it is PsiWhiteSpace && it.textContains('\n') } as
-                                    PsiWhiteSpace?)?.let { it.startOffset + it.text.lastIndexOf('\n') + 1 } ?: 0
+                                val lineStart = (
+                                    node.prevLeaf { it is PsiWhiteSpace && it.textContains('\n') } as
+                                        PsiWhiteSpace?
+                                    )?.let { it.startOffset + it.text.lastIndexOf('\n') + 1 } ?: 0
                                 result.add(SuppressionHint(IntRange(lineStart, node.startOffset), HashSet(args)))
                             }
                         } else {
@@ -409,22 +415,28 @@ object KtLint {
                             parseHintArgs(commentText, "ktlint-disable")?.apply {
                                 open.add(SuppressionHint(IntRange(node.startOffset, node.startOffset), HashSet(this)))
                             }
-                            ?: parseHintArgs(commentText, "ktlint-enable")?.apply {
-                                // match open hint
-                                val disabledRules = HashSet(this)
-                                val openHintIndex = open.indexOfLast { it.disabledRules == disabledRules }
-                                if (openHintIndex != -1) {
-                                    val openingHint = open.removeAt(openHintIndex)
-                                    result.add(SuppressionHint(IntRange(openingHint.range.start, node.startOffset),
-                                        disabledRules))
+                                ?: parseHintArgs(commentText, "ktlint-enable")?.apply {
+                                    // match open hint
+                                    val disabledRules = HashSet(this)
+                                    val openHintIndex = open.indexOfLast { it.disabledRules == disabledRules }
+                                    if (openHintIndex != -1) {
+                                        val openingHint = open.removeAt(openHintIndex)
+                                        result.add(
+                                            SuppressionHint(
+                                                IntRange(openingHint.range.start, node.startOffset),
+                                                disabledRules
+                                            )
+                                        )
+                                    }
                                 }
-                            }
                         }
                     }
                 }
-                result.addAll(open.map {
-                    SuppressionHint(IntRange(it.range.first, rootNode.textLength), it.disabledRules)
-                })
+                result.addAll(
+                    open.map {
+                        SuppressionHint(IntRange(it.range.first, rootNode.textLength), it.disabledRules)
+                    }
+                )
                 return result
             }
 

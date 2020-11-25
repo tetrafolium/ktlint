@@ -49,8 +49,11 @@ class EditorConfig private constructor (
                 val patterns = try {
                     parseSection(sectionName.substring(1, sectionName.length - 1))
                 } catch (e: Exception) {
-                    throw RuntimeException("ktlint failed to parse .editorconfig section \"$sectionName\"" +
-                        " (please report at https://github.com/shyiko/ktlint)", e)
+                    throw RuntimeException(
+                        "ktlint failed to parse .editorconfig section \"$sectionName\"" +
+                            " (please report at https://github.com/shyiko/ktlint)",
+                        e
+                    )
                 }
                 if (patternsToSearchFor.any { patterns.contains(it) }) {
                     map.putAll(section.toMap())

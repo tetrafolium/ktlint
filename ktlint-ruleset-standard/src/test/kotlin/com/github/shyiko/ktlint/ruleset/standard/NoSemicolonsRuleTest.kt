@@ -10,8 +10,9 @@ class NoSemicolonsRuleTest {
 
     @Test
     fun testLint() {
-        assertThat(NoSemicolonsRule().lint(
-            """
+        assertThat(
+            NoSemicolonsRule().lint(
+                """
             package a.b.c;
 
             fun main() {
@@ -19,24 +20,29 @@ class NoSemicolonsRuleTest {
                 println(";")
                 println();
             }
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(1, 14, "no-semi", "Unnecessary semicolon"),
-            LintError(6, 14, "no-semi", "Unnecessary semicolon")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(1, 14, "no-semi", "Unnecessary semicolon"),
+                LintError(6, 14, "no-semi", "Unnecessary semicolon")
+            )
+        )
     }
 
     @Test
     fun testFormat() {
-        assertThat(NoSemicolonsRule().format(
-            """
+        assertThat(
+            NoSemicolonsRule().format(
+                """
             fun main() {
                 fun name() { a();return b }
                 println()
                 println();
             };
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             fun main() {
                 fun name() { a(); return b }
@@ -47,14 +53,16 @@ class NoSemicolonsRuleTest {
         )
         assertThat(NoSemicolonsRule().format("fun main() {}; "))
             .isEqualTo("fun main() {} ")
-        assertThat(NoSemicolonsRule().format(
-            """
+        assertThat(
+            NoSemicolonsRule().format(
+                """
             enum class E {
                 ONE, TWO;
                 fun fn() {}
             }
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             enum class E {
                 ONE, TWO;

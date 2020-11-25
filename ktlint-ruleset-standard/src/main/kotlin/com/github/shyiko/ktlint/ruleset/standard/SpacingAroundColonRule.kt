@@ -28,7 +28,8 @@ class SpacingAroundColonRule : Rule("colon-spacing") {
                 node.parent !is KtClassOrObject &&
                 node.parent !is KtConstructor<*> && // constructor : this/super
                 node.parent !is KtTypeConstraint && // where T : S
-                node.parent?.parent !is KtTypeParameterList) {
+                node.parent?.parent !is KtTypeParameterList
+            ) {
                 emit(node.startOffset, "Unexpected spacing before \":\"", true)
                 if (autoCorrect) {
                     node.prevSibling.node.treeParent.removeChild(node.prevSibling.node)

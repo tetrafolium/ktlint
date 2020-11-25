@@ -68,17 +68,17 @@ class IndentationRule : Rule("indent") {
         val nextNode = node.nextSibling?.node?.elementType
         return (
             prevNode in KtTokens.ALL_ASSIGNMENTS ||
-            parentNode is KtSecondaryConstructor ||
-            nextNode == KtStubElementTypes.TYPE_REFERENCE ||
-            node.nextSibling is KtSuperTypeList ||
-            node.nextSibling is KtSuperTypeListEntry ||
-            node.nextSibling is KtTypeProjection ||
-            parentNode is KtValueArgumentList ||
-            parentNode is KtBinaryExpression ||
-            parentNode is KtDotQualifiedExpression ||
-            parentNode is KtSafeQualifiedExpression ||
-            parentNode is KtParenthesizedExpression
-        )
+                parentNode is KtSecondaryConstructor ||
+                nextNode == KtStubElementTypes.TYPE_REFERENCE ||
+                node.nextSibling is KtSuperTypeList ||
+                node.nextSibling is KtSuperTypeListEntry ||
+                node.nextSibling is KtTypeProjection ||
+                parentNode is KtValueArgumentList ||
+                parentNode is KtBinaryExpression ||
+                parentNode is KtDotQualifiedExpression ||
+                parentNode is KtSafeQualifiedExpression ||
+                parentNode is KtParenthesizedExpression
+            )
     }
 
     // todo: calculating indent based on the previous line value is wrong (see IndentationRule.testLint)
@@ -91,7 +91,8 @@ class IndentationRule : Rule("indent") {
                 nextNode != KtStubElementTypes.SUPER_TYPE_LIST &&
                 nextNode != KtNodeTypes.CONSTRUCTOR_DELEGATION_CALL &&
                 node.textContains('\n') &&
-                node.nextLeaf()?.isPartOf(PsiComment::class) != true) {
+                node.nextLeaf()?.isPartOf(PsiComment::class) != true
+            ) {
                 return node.text.length - node.text.lastIndexOf('\n') - 1
             }
             node = node.prevSibling ?: node.parent

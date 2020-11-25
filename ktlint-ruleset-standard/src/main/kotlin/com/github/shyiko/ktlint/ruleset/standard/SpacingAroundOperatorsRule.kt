@@ -41,8 +41,10 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 class SpacingAroundOperatorsRule : Rule("op-spacing") {
 
-    private val tokenSet = TokenSet.create(MUL, PLUS, MINUS, DIV, PERC, LT, GT, LTEQ, GTEQ, EQEQEQ, EXCLEQEQEQ, EQEQ,
-        EXCLEQ, ANDAND, OROR, ELVIS, EQ, MULTEQ, DIVEQ, PERCEQ, PLUSEQ, MINUSEQ, ARROW)
+    private val tokenSet = TokenSet.create(
+        MUL, PLUS, MINUS, DIV, PERC, LT, GT, LTEQ, GTEQ, EQEQEQ, EXCLEQEQEQ, EQEQ,
+        EXCLEQ, ANDAND, OROR, ELVIS, EQ, MULTEQ, DIVEQ, PERCEQ, PLUSEQ, MINUSEQ, ARROW
+    )
 
     override fun visit(
         node: ASTNode,
@@ -59,7 +61,8 @@ class SpacingAroundOperatorsRule : Rule("op-spacing") {
             if ((node.elementType == GT || node.elementType == LT) &&
                 // fun <T>fn(): T {}
                 node.getNonStrictParentOfType(KtTypeParameterList::class.java)?.parent?.node?.elementType !=
-                    KtStubElementTypes.FUNCTION) {
+                KtStubElementTypes.FUNCTION
+            ) {
                 return
             }
             val spacingBefore = PsiTreeUtil.prevLeaf(node, true) is PsiWhiteSpace ||

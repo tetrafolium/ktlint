@@ -15,7 +15,8 @@ class NoLineBreakAfterElseRule : Rule("no-line-break-after-else") {
     ) {
         if (node is PsiWhiteSpace &&
             node.textContains('\n') &&
-            node.prevSibling?.node?.elementType == KtTokens.ELSE_KEYWORD) {
+            node.prevSibling?.node?.elementType == KtTokens.ELSE_KEYWORD
+        ) {
             emit(node.startOffset + 1, "Unexpected line break after \"else\"", true)
             if (autoCorrect) {
                 (node as LeafPsiElement).rawReplaceWithText(" ")

@@ -10,8 +10,9 @@ class SpacingAroundColonRuleTest {
 
     @Test
     fun testLint() {
-        assertThat(SpacingAroundColonRule().lint(
-            """
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             class A:B
             class A2 : B2
             fun main() {
@@ -22,15 +23,19 @@ class SpacingAroundColonRuleTest {
             interface D
             interface C: D
             interface C2 : D
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(1, 8, "colon-spacing", "Missing spacing around \":\""),
-            LintError(4, 11, "colon-spacing", "Missing spacing after \":\""),
-            LintError(6, 16, "colon-spacing", "Missing spacing before \":\""),
-            LintError(9, 12, "colon-spacing", "Missing spacing before \":\"")
-        ))
-        assertThat(SpacingAroundColonRule().lint(
-            """
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(1, 8, "colon-spacing", "Missing spacing around \":\""),
+                LintError(4, 11, "colon-spacing", "Missing spacing after \":\""),
+                LintError(6, 16, "colon-spacing", "Missing spacing before \":\""),
+                LintError(9, 12, "colon-spacing", "Missing spacing before \":\"")
+            )
+        )
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             @file:JvmName("Foo")
             class Example(@field:Ann val foo: String, @get:Ann val bar: String)
             class Example {
@@ -38,17 +43,21 @@ class SpacingAroundColonRuleTest {
                 public var collaborator: Collaborator
             }
             fun @receiver:Fancy String.myExtension() { }
-            """.trimIndent()
-        )).isEmpty()
-        assertThat(SpacingAroundColonRule().lint(
-            """
+                """.trimIndent()
+            )
+        ).isEmpty()
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             fun main() {
                 val x = Foo::class
             }
-            """.trimIndent()
-        )).isEmpty()
-        assertThat(SpacingAroundColonRule().lint(
-            """
+                """.trimIndent()
+            )
+        ).isEmpty()
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             class A {
                 constructor() : this("")
                 constructor(s: String) {
@@ -59,14 +68,16 @@ class SpacingAroundColonRuleTest {
                 protected abstract fun <T> f(
                     @Nullable thing: String, things: List<T>): Runnable where T : Runnable, T : Closeable
             }
-            """.trimIndent()
-        )).isEmpty()
+                """.trimIndent()
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testFormat() {
-        assertThat(SpacingAroundColonRule().format(
-            """
+        assertThat(
+            SpacingAroundColonRule().format(
+                """
             class A:B
             fun main() {
                 var x:Boolean
@@ -74,8 +85,9 @@ class SpacingAroundColonRuleTest {
             }
             interface D
             interface C: D
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             class A : B
             fun main() {
@@ -90,78 +102,99 @@ class SpacingAroundColonRuleTest {
 
     @Test
     fun testLintMethod() {
-        assertThat(SpacingAroundColonRule().lint(
-            """
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             fun main() : String = "duck"
             fun duck(): String = "main"
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(1, 12, "colon-spacing", "Unexpected spacing before \":\"")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(1, 12, "colon-spacing", "Unexpected spacing before \":\"")
+            )
+        )
     }
 
     @Test
     fun testFormatMethod() {
-        assertThat(SpacingAroundColonRule().format(
-            """
+        assertThat(
+            SpacingAroundColonRule().format(
+                """
             fun main() : String = "duck"
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             fun main(): String = "duck"
-            """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
     fun testLintMethodParams() {
-        assertThat(SpacingAroundColonRule().lint(
-            """
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             fun identity(value: String): String = value
             fun unformattedIdentity(value : String): String = value
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(2, 31, "colon-spacing", "Unexpected spacing before \":\"")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 31, "colon-spacing", "Unexpected spacing before \":\"")
+            )
+        )
     }
 
     @Test
     fun testFormatMethodParams() {
-        assertThat(SpacingAroundColonRule().format(
-            """
+        assertThat(
+            SpacingAroundColonRule().format(
+                """
             fun validIdentity(value: String): String = value
             fun identity(value  : String): String = value
             fun oneSpaceIdentity(value : String): String = value
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             fun validIdentity(value: String): String = value
             fun identity(value: String): String = value
             fun oneSpaceIdentity(value: String): String = value
-            """.trimIndent())
+            """.trimIndent()
+        )
     }
 
     @Test
     fun testLintGenericMethodParam() {
-        assertThat(SpacingAroundColonRule().lint(
-            """
+        assertThat(
+            SpacingAroundColonRule().lint(
+                """
             fun <T: Any> trueIdentity(value: T): T = value
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(1, 7, "colon-spacing", "Missing spacing before \":\"")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(1, 7, "colon-spacing", "Missing spacing before \":\"")
+            )
+        )
     }
 
     @Test
     fun testFormatGenericMethodParam() {
-        assertThat(SpacingAroundColonRule().format(
-            """
+        assertThat(
+            SpacingAroundColonRule().format(
+                """
             fun <T: Any> trueIdentity(value: T): T = value
             fun <T : Any> trueIdentity(value: T): T = value
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             fun <T : Any> trueIdentity(value: T): T = value
             fun <T : Any> trueIdentity(value: T): T = value
-            """.trimIndent())
+            """.trimIndent()
+        )
     }
 }
