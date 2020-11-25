@@ -9,8 +9,9 @@ class IndentationRuleTest {
 
     @Test
     fun testLint() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             /**
              * _
              */
@@ -31,48 +32,58 @@ class IndentationRuleTest {
                     get() = ""
                     set(v: String) { x = v }
             }
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(12, 1, "indent", "Unexpected indentation (3) (it should be 4)"),
-            // fixme: expected indent should not depend on the "previous" line value
-            LintError(13, 1, "indent", "Unexpected indentation (9) (it should be 7)")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(12, 1, "indent", "Unexpected indentation (3) (it should be 4)"),
+                // fixme: expected indent should not depend on the "previous" line value
+                LintError(13, 1, "indent", "Unexpected indentation (9) (it should be 7)")
+            )
+        )
     }
 
     @Test
     fun testLintNested() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun funA() =
                   doStuff().use {
                       while (it.moveToNext()) {
                           doMore()
                       }
                   }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintCustomIndentSize() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun main() {
                val v = ""
                 println(v)
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "3")
-        )).isEqualTo(listOf(
-            LintError(3, 1, "indent", "Unexpected indentation (4) (it should be 3)")
-        ))
+                """.trimIndent(),
+                mapOf("indent_size" to "3")
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(3, 1, "indent", "Unexpected indentation (4) (it should be 3)")
+            )
+        )
     }
 
     @Test
     fun testLintCustomIndentSizeValid() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             /**
              * _
              */
@@ -86,28 +97,32 @@ class IndentationRuleTest {
                 get() = ""
                 set(v: String) { x = v }
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "2")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "2")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintIndentSizeUnset() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun main() {
                val v = ""
                 println(v)
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "unset")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "unset")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndent() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 class TestContinuation {
                     fun main() {
                         val list = listOf(
@@ -119,42 +134,48 @@ class IndentationRuleTest {
                         )
                     }
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentConcatenation() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 class TestSubClass {
                     fun asdf(string: String) = string
                     val c = asdf("long_string" +
                           "")
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentDotQualifiedExpression() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 fun funA() {
                     ClassA()
                           .methodA()
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintIndentInsideObjectBody() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 @Test fun field() {
                     field.validateWith()
                           .handleWith(object : InterfaceA {
@@ -167,16 +188,18 @@ class IndentationRuleTest {
                               }
                           })
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     // fixme: should each argument be on a separate line?
     @Test
     fun testLintContinuationIndentFunctionCallArgumentList() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 fun funA() {
                     val valueA =
                           listOf(ClassA(),
@@ -192,15 +215,17 @@ class IndentationRuleTest {
                             funB()
                       )
                 )
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentInsideParenthesis() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 fun funA() {
                     val valA = ClassA(
                           field = (
@@ -211,26 +236,30 @@ class IndentationRuleTest {
                                 ))
                     )
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintIndentGettersAndSetters() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 val storyBody: String
                     get() = String.format(body, "")
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentSuperTypeList() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             class ClassA(fieldA: TypeA, fieldB: TypeB = DefaultB) :
                   SuperClassA(fieldA, fieldB)
             class ClassA(a: TypeA) :
@@ -238,76 +267,88 @@ class IndentationRuleTest {
 
                 private lateinit var view: View
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintIndentInsideFunctionBody() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
                 fun funA() {
                     val valueA = ClassA()
                     valueA.doStuff()
                     assertThat(valueA.getFieldB()).isEqualTo(100L)
                 }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentInsideSuperTypeList() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             class ClassA : ClassB(), InterfaceA,
                   InterfaceB {
             }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentTypeProjection() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             val variable: SuperTpe<TypeA,
                   TypeB> = Implementation()
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentAssignment() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun funA() {
                 val (a, b, c) =
                       anotherFun()
             }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test()
     fun testLintContinuationIndentTypeCasting() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun funA() = funB() as
                   TypeA
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentConstructorDelegation() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             class A : B() {
                 constructor(a: String) :
                       this(a)
@@ -318,57 +359,67 @@ class IndentationRuleTest {
                     init(a)
                 }
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentSafeChaining() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             val valueA = call()
                   //comment
                   ?.chainCallC { it.anotherCall() }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLintContinuationIndentTypeDeclaration() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             private fun funA(a: Int, b: String):
                   MyTypeA {
                 return MyTypeA(a, b)
             }
-              """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEmpty()
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEmpty()
     }
 
     // https://kotlinlang.org/docs/reference/coding-conventions.html#method-call-formatting
     @Test
     fun testLintMultilineFunctionCall() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun main() {
                 fn(a,
                    b,
                    c)
             }
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(3, 1, "indent", "Unexpected indentation (7) (it should be 8)"),
-            LintError(4, 1, "indent", "Unexpected indentation (7) (it should be 8)")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(3, 1, "indent", "Unexpected indentation (7) (it should be 8)"),
+                LintError(4, 1, "indent", "Unexpected indentation (7) (it should be 8)")
+            )
+        )
     }
 
     @Test
     fun testLintCommentsAreIgnored() {
-        assertThat(IndentationRule().lint(
-            """
+        assertThat(
+            IndentationRule().lint(
+                """
             fun funA(argA: String) =
                   // comment
             // comment
@@ -380,10 +431,13 @@ class IndentationRuleTest {
                     )
                 })
             }
-            """.trimIndent(),
-            mapOf("indent_size" to "4", "continuation_indent_size" to "6")
-        )).isEqualTo(listOf(
-            LintError(7, 1, "indent", "Unexpected indentation (1) (it should be 8)")
-        ))
+                """.trimIndent(),
+                mapOf("indent_size" to "4", "continuation_indent_size" to "6")
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(7, 1, "indent", "Unexpected indentation (1) (it should be 8)")
+            )
+        )
     }
 }

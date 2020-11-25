@@ -11,18 +11,24 @@ class SpacingAroundCommaRuleTest {
     @Test
     fun testLint() {
         assertThat(SpacingAroundCommaRule().lint("fun main() { x(1,3); x(1, 3); println(\",\") }"))
-            .isEqualTo(listOf(
-                LintError(1, 18, "comma-spacing", "Missing spacing after \",\"")
-            ))
-        assertThat(SpacingAroundCommaRule().lint(
-            """
+            .isEqualTo(
+                listOf(
+                    LintError(1, 18, "comma-spacing", "Missing spacing after \",\"")
+                )
+            )
+        assertThat(
+            SpacingAroundCommaRule().lint(
+                """
             enum class E {
                 A, B,C
             }
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(2, 10, "comma-spacing", "Missing spacing after \",\"")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 10, "comma-spacing", "Missing spacing after \",\"")
+            )
+        )
     }
 
     @Test

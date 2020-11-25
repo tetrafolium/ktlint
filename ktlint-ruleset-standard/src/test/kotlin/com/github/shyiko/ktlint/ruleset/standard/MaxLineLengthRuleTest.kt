@@ -14,18 +14,22 @@ class MaxLineLengthRuleTest {
 
     @Test
     fun testErrorSupression() {
-        assertThat(MaxLineLengthRule().lint(
-            """
+        assertThat(
+            MaxLineLengthRule().lint(
+                """
             fun main(vaaaaaaaaaaaaaaaaaaaaaaar: String) { // ktlint-disable max-line-length
                 println("teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeext")
             /* ktlint-disable max-line-length */
                 println("teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeext")
             }
-            """.trimIndent(),
-            userData = mapOf("max_line_length" to "40")
-        )).isEqualTo(listOf(
-            LintError(2, 1, "max-line-length", "Exceeded max line length (40)")
-        ))
+                """.trimIndent(),
+                userData = mapOf("max_line_length" to "40")
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 1, "max-line-length", "Exceeded max line length (40)")
+            )
+        )
     }
 
     @Test

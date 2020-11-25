@@ -65,11 +65,11 @@ class ChainWrappingRule : Rule("chain-wrapping") {
                 prevLeaf.prevLeafIgnoringWhitespaceAndComments()?.let { leaf ->
                     val type = leaf.node.elementType
                     type == KtTokens.LPAR ||
-                    type == KtTokens.RPAR ||
-                    type == KtTokens.COMMA ||
-                    type == KtTokens.LBRACE ||
-                    type == KtTokens.ELSE_KEYWORD ||
-                    KtTokens.OPERATIONS.contains(type)
+                        type == KtTokens.RPAR ||
+                        type == KtTokens.COMMA ||
+                        type == KtTokens.LBRACE ||
+                        type == KtTokens.ELSE_KEYWORD ||
+                        KtTokens.OPERATIONS.contains(type)
                 } == false &&
                 // LeafPsiElement->KtOperationReferenceExpression->KtPrefixExpression->KtWhenConditionWithExpression
                 node.treeParent?.treeParent?.treeParent?.elementType != KtNodeTypes.WHEN_CONDITION_EXPRESSION

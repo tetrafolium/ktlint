@@ -22,9 +22,11 @@ class CheckStyleReporter(val out: PrintStream) : Reporter {
         for ((file, errList) in acc.entries.sortedBy { it.key }) {
             out.println("""	<file name="${file.escapeXMLAttrValue()}">""")
             for ((line, col, ruleId, detail) in errList) {
-                out.println("""		<error line="$line" column="$col" severity="error" message="${
+                out.println(
+                    """		<error line="$line" column="$col" severity="error" message="${
                     detail.escapeXMLAttrValue()
-                }" source="$ruleId" />""")
+                    }" source="$ruleId" />"""
+                )
             }
             out.println("""	</file>""")
         }

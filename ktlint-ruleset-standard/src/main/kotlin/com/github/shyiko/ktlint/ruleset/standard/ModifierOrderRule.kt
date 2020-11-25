@@ -1,7 +1,6 @@
 package com.github.shyiko.ktlint.ruleset.standard
 
 import com.github.shyiko.ktlint.core.Rule
-import java.util.Arrays
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.com.intellij.psi.tree.TokenSet
@@ -31,6 +30,7 @@ import org.jetbrains.kotlin.lexer.KtTokens.SUSPEND_KEYWORD
 import org.jetbrains.kotlin.lexer.KtTokens.TAILREC_KEYWORD
 import org.jetbrains.kotlin.lexer.KtTokens.VARARG_KEYWORD
 import org.jetbrains.kotlin.psi.KtDeclarationModifierList
+import java.util.Arrays
 
 class ModifierOrderRule : Rule("modifier-order") {
 
@@ -66,9 +66,13 @@ class ModifierOrderRule : Rule("modifier-order") {
             val modifierArr = node.getChildren(tokenSet)
             val sorted = modifierArr.copyOf().apply { sortWith(compareBy { order.indexOf(it.elementType) }) }
             if (!Arrays.equals(modifierArr, sorted)) {
-                emit(node.startOffset, "Incorrect modifier order (should be \"${
+                emit(
+                    node.startOffset,
+                    "Incorrect modifier order (should be \"${
                     sorted.map { it.text }.joinToString(" ")
-                }\")", true)
+                    }\")",
+                    true
+                )
                 if (autoCorrect) {
                     modifierArr.forEachIndexed { i, n ->
                         // fixme: find a better way (node type is now potentially out of sync)

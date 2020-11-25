@@ -10,30 +10,36 @@ class NoUnitReturnRuleTest {
 
     @Test
     fun testLint() {
-        assertThat(NoUnitReturnRule().lint(
-            """
+        assertThat(
+            NoUnitReturnRule().lint(
+                """
             fun f1() {}
             fun f2(): Unit {}
             fun f2(): Unit = start()
             fun f2_(): Unit /**/
                 = start()
             fun f3(): String = ""
-            """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(2, 11, "no-unit-return", "Unnecessary \"Unit\" return type")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 11, "no-unit-return", "Unnecessary \"Unit\" return type")
+            )
+        )
     }
 
     @Test
     fun testFormat() {
-        assertThat(NoUnitReturnRule().format(
-            """
+        assertThat(
+            NoUnitReturnRule().format(
+                """
             fun f1() {}
             fun f2(): Unit {}
             fun f3(): String = ""
             fun f4(a: Unit): Unit {}
             """
-        )).isEqualTo(
+            )
+        ).isEqualTo(
             """
             fun f1() {}
             fun f2() {}

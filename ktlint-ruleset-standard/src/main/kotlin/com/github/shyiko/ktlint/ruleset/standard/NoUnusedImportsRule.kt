@@ -56,7 +56,8 @@ class NoUnusedImportsRule : Rule("no-unused-imports") {
                     val linkText = psi.getLinkText().replace("`", "")
                     ref.add(linkText.split('.').first())
                 } else if ((type == KtNodeTypes.REFERENCE_EXPRESSION || type == KtNodeTypes.OPERATION_REFERENCE) &&
-                    !psi.isPartOf(KtImportDirective::class)) {
+                    !psi.isPartOf(KtImportDirective::class)
+                ) {
                     ref.add(vnode.text.trim('`'))
                 }
             }
@@ -69,7 +70,8 @@ class NoUnusedImportsRule : Rule("no-unused-imports") {
             val importPath = importDirective.importPath?.pathStr!!
             if (importDirective.aliasName == null &&
                 importPath.startsWith(packageName) &&
-                importPath.substring(packageName.length + 1).indexOf('.') == -1) {
+                importPath.substring(packageName.length + 1).indexOf('.') == -1
+            ) {
                 emit(importDirective.startOffset, "Unnecessary import", true)
                 if (autoCorrect) {
                     importDirective.delete()

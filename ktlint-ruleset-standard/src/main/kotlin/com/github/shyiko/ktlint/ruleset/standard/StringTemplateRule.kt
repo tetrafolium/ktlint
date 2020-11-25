@@ -34,7 +34,8 @@ class StringTemplateRule : Rule("string-template") {
                 val dot = callExpression.prevSibling
                 if (dot?.node?.elementType == KtTokens.DOT &&
                     callExpression.text == "toString()" &&
-                    dotQualifiedExpression.firstChild?.node?.elementType != KtNodeTypes.SUPER_EXPRESSION) {
+                    dotQualifiedExpression.firstChild?.node?.elementType != KtNodeTypes.SUPER_EXPRESSION
+                ) {
                     emit(dot.node.startOffset, "Redundant \"toString()\" call in string template", true)
                     if (autoCorrect) {
                         node.removeChild(dot.node)
@@ -44,9 +45,14 @@ class StringTemplateRule : Rule("string-template") {
             }
             if (node.text.startsWith("${'$'}{") &&
                 node.text.let { it.substring(2, it.length - 1) }.all { it.isPartOfIdentifier() } &&
-                (node.treeNext.elementType == KtTokens.CLOSING_QUOTE ||
-                    (node.psi.nextSibling.node.elementType == KtNodeTypes.LITERAL_STRING_TEMPLATE_ENTRY &&
-                        !node.psi.nextSibling.text[0].isPartOfIdentifier()))) {
+                (
+                    node.treeNext.elementType == KtTokens.CLOSING_QUOTE ||
+                        (
+                            node.psi.nextSibling.node.elementType == KtNodeTypes.LITERAL_STRING_TEMPLATE_ENTRY &&
+                                !node.psi.nextSibling.text[0].isPartOfIdentifier()
+                            )
+                    )
+            ) {
                 emit(node.treePrev.startOffset + 2, "Redundant curly braces", true)
                 if (autoCorrect) {
                     // fixme: a proper way would be to downcast to SHORT_STRING_TEMPLATE_ENTRY
