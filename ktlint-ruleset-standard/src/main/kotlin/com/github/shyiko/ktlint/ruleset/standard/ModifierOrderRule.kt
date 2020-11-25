@@ -66,9 +66,13 @@ class ModifierOrderRule : Rule("modifier-order") {
             val modifierArr = node.getChildren(tokenSet)
             val sorted = modifierArr.copyOf().apply { sortWith(compareBy { order.indexOf(it.elementType) }) }
             if (!Arrays.equals(modifierArr, sorted)) {
-                emit(node.startOffset, "Incorrect modifier order (should be \"${
+                emit(
+                    node.startOffset,
+                    "Incorrect modifier order (should be \"${
                     sorted.map { it.text }.joinToString(" ")
-                }\")", true)
+                    }\")",
+                    true
+                )
                 if (autoCorrect) {
                     modifierArr.forEachIndexed { i, n ->
                         // fixme: find a better way (node type is now potentially out of sync)

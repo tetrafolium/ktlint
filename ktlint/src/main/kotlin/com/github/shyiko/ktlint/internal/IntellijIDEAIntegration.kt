@@ -31,62 +31,76 @@ object IntellijIDEAIntegration {
         val continuationIndentSize = editorConfig["continuation_indent_size"]?.toIntOrNull() ?: 4
         val indentSize = editorConfig["indent_size"]?.toIntOrNull() ?: 4
         val codeStyleName = "ktlint${
-            if (continuationIndentSize == 4) "" else "-cis$continuationIndentSize"
+        if (continuationIndentSize == 4) "" else "-cis$continuationIndentSize"
         }${
-            if (indentSize == 4) "" else "-is$indentSize"
+        if (indentSize == 4) "" else "-is$indentSize"
         }"
         val paths =
             // macOS
             Glob.from("IntelliJIdea*", "IdeaIC*", "AndroidStudio*")
-                .iterate(Paths.get(home, "Library", "Preferences"),
-                    Glob.IterationOption.SKIP_CHILDREN, Glob.IterationOption.DIRECTORY).asSequence() +
-            // linux/windows
-            Glob.from(".IntelliJIdea*/config", ".IdeaIC*/config", ".AndroidStudio*/config")
-                .iterate(Paths.get(home),
-                    Glob.IterationOption.SKIP_CHILDREN, Glob.IterationOption.DIRECTORY).asSequence()
-        val updates = (paths.flatMap { dir ->
-            sequenceOf(
-                Paths.get(dir.toString(), "codestyles", "$codeStyleName.xml") to
-                    overwriteWithResource("/config/codestyles/ktlint.xml") { resource ->
-                        resource
-                            .replace("code_scheme name=\"ktlint\"",
-                                "code_scheme name=\"$codeStyleName\"")
-                            .replace("option name=\"INDENT_SIZE\" value=\"4\"",
-                                "option name=\"INDENT_SIZE\" value=\"$indentSize\"")
-                            .replace("option name=\"CONTINUATION_INDENT_SIZE\" value=\"8\"",
-                                "option name=\"CONTINUATION_INDENT_SIZE\" value=\"$continuationIndentSize\"")
-                    },
-                Paths.get(dir.toString(), "options", "code.style.schemes.xml") to
-                    overwriteWithResource("/config/options/code.style.schemes.xml") { content ->
-                        content
-                            .replace("option name=\"CURRENT_SCHEME_NAME\" value=\"ktlint\"",
-                                "option name=\"CURRENT_SCHEME_NAME\" value=\"$codeStyleName\"")
-                    },
-                Paths.get(dir.toString(), "inspection", "ktlint.xml") to
-                    overwriteWithResource("/config/inspection/ktlint.xml"),
-                Paths.get(dir.toString(), "options", "editor.codeinsight.xml") to {
-                    var arr = "<application></application>".toByteArray()
-                    try {
-                        arr = Files.readAllBytes(Paths.get(dir.toString(), "options", "editor.codeinsight.xml"))
-                    } catch (e: IOException) {
-                        if (e !is NoSuchFileException) {
-                            throw e
+                .iterate(
+                    Paths.get(home, "Library", "Preferences"),
+                    Glob.IterationOption.SKIP_CHILDREN, Glob.IterationOption.DIRECTORY
+                ).asSequence() +
+                // linux/windows
+                Glob.from(".IntelliJIdea*/config", ".IdeaIC*/config", ".AndroidStudio*/config")
+                    .iterate(
+                        Paths.get(home),
+                        Glob.IterationOption.SKIP_CHILDREN, Glob.IterationOption.DIRECTORY
+                    ).asSequence()
+        val updates = (
+            paths.flatMap { dir ->
+                sequenceOf(
+                    Paths.get(dir.toString(), "codestyles", "$codeStyleName.xml") to
+                        overwriteWithResource("/config/codestyles/ktlint.xml") { resource ->
+                            resource
+                                .replace(
+                                    "code_scheme name=\"ktlint\"",
+                                    "code_scheme name=\"$codeStyleName\""
+                                )
+                                .replace(
+                                    "option name=\"INDENT_SIZE\" value=\"4\"",
+                                    "option name=\"INDENT_SIZE\" value=\"$indentSize\""
+                                )
+                                .replace(
+                                    "option name=\"CONTINUATION_INDENT_SIZE\" value=\"8\"",
+                                    "option name=\"CONTINUATION_INDENT_SIZE\" value=\"$continuationIndentSize\""
+                                )
+                        },
+                    Paths.get(dir.toString(), "options", "code.style.schemes.xml") to
+                        overwriteWithResource("/config/options/code.style.schemes.xml") { content ->
+                            content
+                                .replace(
+                                    "option name=\"CURRENT_SCHEME_NAME\" value=\"ktlint\"",
+                                    "option name=\"CURRENT_SCHEME_NAME\" value=\"$codeStyleName\""
+                                )
+                        },
+                    Paths.get(dir.toString(), "inspection", "ktlint.xml") to
+                        overwriteWithResource("/config/inspection/ktlint.xml"),
+                    Paths.get(dir.toString(), "options", "editor.codeinsight.xml") to {
+                        var arr = "<application></application>".toByteArray()
+                        try {
+                            arr = Files.readAllBytes(Paths.get(dir.toString(), "options", "editor.codeinsight.xml"))
+                        } catch (e: IOException) {
+                            if (e !is NoSuchFileException) {
+                                throw e
+                            }
                         }
+                        enableOptimizeImportsOnTheFly(arr)
                     }
-                    enableOptimizeImportsOnTheFly(arr)
-                }
+                )
+            } + sequenceOf(
+                Paths.get(workDir.toString(), ".idea", "codeStyleSettings.xml") to
+                    overwriteWithResource("/config/.idea/codeStyleSettings.xml") { content ->
+                        content.replace(
+                            "option name=\"PREFERRED_PROJECT_CODE_STYLE\" value=\"ktlint\"",
+                            "option name=\"PREFERRED_PROJECT_CODE_STYLE\" value=\"$codeStyleName\""
+                        )
+                    },
+                Paths.get(workDir.toString(), ".idea", "inspectionProfiles", "profiles_settings.xml") to
+                    overwriteWithResource("/config/.idea/inspectionProfiles/profiles_settings.xml")
             )
-        } + sequenceOf(
-            Paths.get(workDir.toString(), ".idea", "codeStyleSettings.xml") to
-                overwriteWithResource("/config/.idea/codeStyleSettings.xml") { content ->
-                    content.replace(
-                        "option name=\"PREFERRED_PROJECT_CODE_STYLE\" value=\"ktlint\"",
-                        "option name=\"PREFERRED_PROJECT_CODE_STYLE\" value=\"$codeStyleName\""
-                    )
-                },
-            Paths.get(workDir.toString(), ".idea", "inspectionProfiles", "profiles_settings.xml") to
-                overwriteWithResource("/config/.idea/inspectionProfiles/profiles_settings.xml")
-        )).toList()
+            ).toList()
         if (!dryRun) {
             updates.forEach { (path, contentSupplier) ->
                 Files.createDirectories(path.parent)
@@ -112,15 +126,19 @@ object IntellijIDEAIntegration {
         */
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ByteArrayInputStream(arr))
         val xpath = XPathFactory.newInstance().newXPath()
-        var cis = xpath.evaluate("//component[@name='CodeInsightSettings']",
-            doc, XPathConstants.NODE) as Element?
+        var cis = xpath.evaluate(
+            "//component[@name='CodeInsightSettings']",
+            doc, XPathConstants.NODE
+        ) as Element?
         if (cis == null) {
             cis = doc.createElement("component")
             cis.setAttribute("name", "CodeInsightSettings")
             cis = doc.documentElement.appendChild(cis) as Element
         }
-        var oiotf = xpath.evaluate("//option[@name='OPTIMIZE_IMPORTS_ON_THE_FLY']",
-            cis, XPathConstants.NODE) as Element?
+        var oiotf = xpath.evaluate(
+            "//option[@name='OPTIMIZE_IMPORTS_ON_THE_FLY']",
+            cis, XPathConstants.NODE
+        ) as Element?
         if (oiotf == null) {
             oiotf = doc.createElement("option")
             oiotf.setAttribute("name", "OPTIMIZE_IMPORTS_ON_THE_FLY")

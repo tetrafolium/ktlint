@@ -14,38 +14,49 @@ class SpacingAroundCurlyRuleTest {
         assertThat(SpacingAroundCurlyRule().lint("fun emit() { val a = a@{ } }")).isEmpty()
         assertThat(SpacingAroundCurlyRule().lint("fun emit() {}")).isEmpty()
         assertThat(SpacingAroundCurlyRule().lint("fun main() { val v = if (true){return 0} }"))
-            .isEqualTo(listOf(
-                LintError(1, 31, "curly-spacing", "Missing spacing around \"{\""),
-                LintError(1, 40, "curly-spacing", "Missing spacing before \"}\"")
-            ))
+            .isEqualTo(
+                listOf(
+                    LintError(1, 31, "curly-spacing", "Missing spacing around \"{\""),
+                    LintError(1, 40, "curly-spacing", "Missing spacing before \"}\"")
+                )
+            )
         assertThat(SpacingAroundCurlyRule().lint("fun main() { val v = if (true) { return 0 } }"))
             .isEmpty()
         assertThat(SpacingAroundCurlyRule().lint("fun main() { fn({a -> a}, 0) }"))
-            .isEqualTo(listOf(
-                LintError(1, 18, "curly-spacing", "Missing spacing after \"{\""),
-                LintError(1, 24, "curly-spacing", "Missing spacing before \"}\"")
-            ))
+            .isEqualTo(
+                listOf(
+                    LintError(1, 18, "curly-spacing", "Missing spacing after \"{\""),
+                    LintError(1, 24, "curly-spacing", "Missing spacing before \"}\"")
+                )
+            )
         assertThat(SpacingAroundCurlyRule().lint("fun main() { fn({ a -> a }, 0) }"))
             .isEmpty()
         assertThat(SpacingAroundCurlyRule().lint("fun main() { fn({}, 0) && fn2({ }, 0) }"))
             .isEmpty()
         assertThat(SpacingAroundCurlyRule().lint("fun main() { find { it.default ?: false }?.phone }"))
             .isEmpty()
-        assertThat(SpacingAroundCurlyRule().lint("""
+        assertThat(
+            SpacingAroundCurlyRule().lint(
+                """
             fun main() {
                 emptyList<String>().find { true } !!.hashCode()
                 emptyList<String>().find { true }!!.hashCode()
             }
-            """.trimIndent()))
-            .isEqualTo(listOf(
-                LintError(2, 37, "curly-spacing", "Unexpected space after \"}\"")
-            ))
+                """.trimIndent()
+            )
+        )
+            .isEqualTo(
+                listOf(
+                    LintError(2, 37, "curly-spacing", "Unexpected space after \"}\"")
+                )
+            )
     }
 
     @Test
     fun testFormat() {
-        assertThat(SpacingAroundCurlyRule().format(
-            """
+        assertThat(
+            SpacingAroundCurlyRule().format(
+                """
             fun main() {
                 val v = if (true){return ""}
                 val v = if (true) { return "" }
@@ -90,8 +101,9 @@ class SpacingAroundCurlyRuleTest {
                     { true }
             }
             class A { private val shouldEjectBlock = block@ { (pathProgress ?: return@block false) >= 0.85 } }
-            """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
             fun main() {
                 val v = if (true) { return "" }

@@ -11,59 +11,73 @@ const val ruleId = "no-line-break-before-assignment"
 class NoLineBreakBeforeAssignmentRuleTest {
     @Test
     fun testAllPartsOnSameLineIsValid() {
-        assertThat(NoLineBreakBeforeAssignmentRule().lint(
-            """
+        assertThat(
+            NoLineBreakBeforeAssignmentRule().lint(
+                """
               val valA = ""
-              """.trimIndent()
-        )).isEmpty()
+                """.trimIndent()
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLineBreakAfterAssignmentIsValid() {
-        assertThat(NoLineBreakBeforeAssignmentRule().lint(
-            """
+        assertThat(
+            NoLineBreakBeforeAssignmentRule().lint(
+                """
                 val valA =
                       ""
-              """.trimIndent()
-        )).isEmpty()
+                """.trimIndent()
+            )
+        ).isEmpty()
     }
 
     @Test
     fun testLineBreakBeforeAssignmentIsViolation() {
-        assertThat(NoLineBreakBeforeAssignmentRule().lint(
-            """
+        assertThat(
+            NoLineBreakBeforeAssignmentRule().lint(
+                """
               val valA
                     = ""
-              """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(2, 7, ruleId, "Line break before assignment is not allowed")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 7, ruleId, "Line break before assignment is not allowed")
+            )
+        )
     }
 
     @Test
     fun testViolationInFunction() {
-        assertThat(NoLineBreakBeforeAssignmentRule().lint(
-            """
+        assertThat(
+            NoLineBreakBeforeAssignmentRule().lint(
+                """
               fun funA()
                     = ""
-              """.trimIndent()
-        )).isEqualTo(listOf(
-            LintError(2, 7, ruleId, "Line break before assignment is not allowed")
-        ))
+                """.trimIndent()
+            )
+        ).isEqualTo(
+            listOf(
+                LintError(2, 7, ruleId, "Line break before assignment is not allowed")
+            )
+        )
     }
 
     @Test
     fun testFixViolationByRemovingLineBreakFromLeftAndPutItOnRightSide() {
-        assertThat(NoLineBreakBeforeAssignmentRule().format(
-            """
+        assertThat(
+            NoLineBreakBeforeAssignmentRule().format(
+                """
               fun funA()
                     = ""
-              """.trimIndent()
-        )).isEqualTo(
+                """.trimIndent()
+            )
+        ).isEqualTo(
             """
               fun funA() =
                     ""
-              """.trimIndent()
+            """.trimIndent()
         )
     }
 }

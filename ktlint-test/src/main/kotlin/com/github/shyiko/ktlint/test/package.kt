@@ -38,22 +38,28 @@ class DumpAST @JvmOverloads constructor(
             level++
             parent = parent?.treeParent
         } while (parent != null)
-        out.println((
-            location(node)
-                ?.let { String.format("%${lineNumberColumnLength}s: ", it.line).gray() }
-                // should only happen when autoCorrect=true and other rules mutate AST in a way that changes text length
-                ?: String.format("%${lineNumberColumnLength}s: ", "?").gray()
-            ) +
-            "  ".repeat(level).gray() +
-            colorClassName(node.psi.className) +
-            " (".gray() + colorClassName(node.elementType.className) + "." + node.elementType + ")".gray() +
-            if (node.getChildren(null).isEmpty()) " \"" + node.text.escape().yellow() + "\"" else "")
+        out.println(
+            (
+                location(node)
+                    ?.let { String.format("%${lineNumberColumnLength}s: ", it.line).gray() }
+                    // should only happen when autoCorrect=true and other rules mutate AST in a way that changes text length
+                    ?: String.format("%${lineNumberColumnLength}s: ", "?").gray()
+                ) +
+                "  ".repeat(level).gray() +
+                colorClassName(node.psi.className) +
+                " (".gray() + colorClassName(node.elementType.className) + "." + node.elementType + ")".gray() +
+                if (node.getChildren(null).isEmpty()) " \"" + node.text.escape().yellow() + "\"" else ""
+        )
         if (lastNode == node) {
             out.println()
-            out.println(" ".repeat(lineNumberColumnLength) +
-                "  format: <line_number:> <node.psi::class> (<node.elementType>) \"<node.text>\"".gray())
-            out.println(" ".repeat(lineNumberColumnLength) +
-                "  legend: ~ = org.jetbrains.kotlin, c.i.p = com.intellij.psi".gray())
+            out.println(
+                " ".repeat(lineNumberColumnLength) +
+                    "  format: <line_number:> <node.psi::class> (<node.elementType>) \"<node.text>\"".gray()
+            )
+            out.println(
+                " ".repeat(lineNumberColumnLength) +
+                    "  legend: ~ = org.jetbrains.kotlin, c.i.p = com.intellij.psi".gray()
+            )
             out.println()
         }
     }
@@ -66,8 +72,10 @@ class DumpAST @JvmOverloads constructor(
             ?.takeIf { it.isValid && it.containingFile != null }
             ?.let {
                 try {
-                    DiagnosticUtils.offsetToLineAndColumn(it.containingFile.viewProvider.document,
-                        it.textRange.startOffset)
+                    DiagnosticUtils.offsetToLineAndColumn(
+                        it.containingFile.viewProvider.document,
+                        it.textRange.startOffset
+                    )
                 } catch (e: Exception) {
                     null // DiagnosticUtils.offsetToLineAndColumn has knowledge of mutated AST
                 }

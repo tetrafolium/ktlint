@@ -11,12 +11,15 @@ class NoMultipleSpacesRuleTest {
     @Test
     fun testLint() {
         assertThat(NoMultipleSpacesRule().lint("fun main() { x(1,3);  x(1, 3)\n  \n  }"))
-            .isEqualTo(listOf(
-                LintError(1, 22, "no-multi-spaces", "Unnecessary space(s)")
-            ))
+            .isEqualTo(
+                listOf(
+                    LintError(1, 22, "no-multi-spaces", "Unnecessary space(s)")
+                )
+            )
         // allow vertical alignment of comments
-        assertThat(NoMultipleSpacesRule().lint(
-            """
+        assertThat(
+            NoMultipleSpacesRule().lint(
+                """
             // square/kotlinpoet/src/main/java/com/squareup/kotlinpoet/FunSpec.kt case
             fun characterLiteralWithoutSingleQuotes(c: Char): String {
               return when {
@@ -31,8 +34,9 @@ class NoMultipleSpacesRuleTest {
                 else -> Character.toString(c)
               }
             }
-            """.trimIndent()
-        )).isEmpty()
+                """.trimIndent()
+            )
+        ).isEmpty()
     }
 
     @Test

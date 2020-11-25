@@ -31,13 +31,14 @@ class ParameterListWrappingRule : Rule("parameter-list-wrapping") {
         }
         if (node.elementType == KtStubElementTypes.VALUE_PARAMETER_LIST &&
             // skip lambda parameters
-            node.treeParent?.elementType != KtNodeTypes.FUNCTION_LITERAL) {
+            node.treeParent?.elementType != KtNodeTypes.FUNCTION_LITERAL
+        ) {
             // each parameter should be on a separate line if
             // - at least one of the parameters is
             // - maxLineLength exceeded (and separating parameters with \n would actually help)
             // in addition, "(" and ")" must be on separates line if any of the parameters are (otherwise on the same)
             val putParametersOnSeparateLines = node.textContains('\n')
-                // maxLineLength > 0 && node.lineLength() > maxLineLength
+            // maxLineLength > 0 && node.lineLength() > maxLineLength
             if (putParametersOnSeparateLines) {
                 // aiming for
                 // ... LPAR
@@ -61,8 +62,12 @@ class ParameterListWrappingRule : Rule("parameter-list-wrapping") {
                                     if (childIndent == intendedIndent) {
                                         continue@nextChild
                                     }
-                                    emit(child.startOffset, "Unexpected indentation" +
-                                        " (expected ${intendedIndent.length - 1}, actual ${childIndent.length - 1})", true)
+                                    emit(
+                                        child.startOffset,
+                                        "Unexpected indentation" +
+                                            " (expected ${intendedIndent.length - 1}, actual ${childIndent.length - 1})",
+                                        true
+                                    )
                                 } else {
                                     emit(child.startOffset, errorMessage(child), true)
                                 }
@@ -79,17 +84,20 @@ class ParameterListWrappingRule : Rule("parameter-list-wrapping") {
                                 }
                             }
                             if (paramInnerIndentAdjustment != 0 &&
-                                child.elementType == KtStubElementTypes.VALUE_PARAMETER) {
+                                child.elementType == KtStubElementTypes.VALUE_PARAMETER
+                            ) {
                                 child.visit { n ->
                                     if (n.elementType == KtTokens.WHITE_SPACE && n.textContains('\n')) {
                                         val split = n.text.split("\n")
-                                        (n.psi as LeafElement).rawReplaceWithText(split.joinToString("\n") {
-                                            if (paramInnerIndentAdjustment > 0) {
-                                                it + " ".repeat(paramInnerIndentAdjustment)
-                                            } else {
-                                                it.substring(0, Math.max(it.length + paramInnerIndentAdjustment, 0))
+                                        (n.psi as LeafElement).rawReplaceWithText(
+                                            split.joinToString("\n") {
+                                                if (paramInnerIndentAdjustment > 0) {
+                                                    it + " ".repeat(paramInnerIndentAdjustment)
+                                                } else {
+                                                    it.substring(0, Math.max(it.length + paramInnerIndentAdjustment, 0))
+                                                }
                                             }
-                                        })
+                                        )
                                     }
                                 }
                             }

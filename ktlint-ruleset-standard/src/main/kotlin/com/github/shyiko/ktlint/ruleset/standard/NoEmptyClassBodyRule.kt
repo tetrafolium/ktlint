@@ -20,7 +20,8 @@ class NoEmptyClassBodyRule : Rule("no-empty-class-body") {
         if (node.elementType == CLASS_BODY && node.psi.firstChild != null &&
             node.psi.firstChild.node.elementType == KtTokens.LBRACE &&
             node.psi.firstChild.getNextSiblingIgnoringWhitespace(false)!!.node.elementType == KtTokens.RBRACE &&
-            !node.psi.isPartOf(KtObjectLiteralExpression::class)) {
+            !node.psi.isPartOf(KtObjectLiteralExpression::class)
+        ) {
             emit(node.startOffset, "Unnecessary block (\"{}\")", true)
             if (autoCorrect) {
                 val prevNode = node.psi.prevSibling.node
