@@ -5,22 +5,7 @@ inspecode:
           - '**/src/test/'
         options:
             --language-version: 1.4
-        thresholds: { num-issues: 101 }
-            #   15 ComplexCondition
-            #   17 ComplexMethod
-            #    8 EmptyFunctionBlock
-            #   14 ForbiddenComment
-            #    6 LongMethod
-            #    9 MagicNumber
-            #    1 MatchingDeclarationName
-            #   26 MaxLineLength
-            #    9 NestedBlockDepth
-            #    2 ReturnCount
-            #    6 SpreadOperator
-            #    2 ThrowsCount
-            #    7 TooGenericExceptionCaught
-            #    2 TooGenericExceptionThrown
-            #    2 TooManyFunctions
+        thresholds: { num-issues: 98 }
 
     fossology:
         thresholds: { num-issues: 4 }
@@ -31,12 +16,12 @@ inspecode:
     jscpd:
         ignore:
           - '**/src/test/'
-        thresholds: { num-issues: 24 }
+        thresholds: { num-issues: 17 }
 
     ktlint:
         #config-file: .editorconfig  # (auto-detect)
         auto-fix: true
-        thresholds: { num-issues: 1 }
+        thresholds: { num-issues: 723 }
 
     misspell:
         auto-fix: true
